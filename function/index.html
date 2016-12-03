@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>function</title>
+</head>
+<body>
+	<script>
+		//1.Создать функцию multiply, которая будет принимать любое количество чисел и возвращать их произведение. Если нет ниодного аргумента, вернуть: multiply()= 0.
+			function multiply(a){
+				if(a !== 1){
+					var mult= "multipy()= 0";
+					document.write(mult);			
+				}else{					
+					var int= 1;				
+					for(var i= 0; i < arguments.length; i++){				
+						int *= arguments[i];
+					}
+					return int;	
+				}
+			}
+			document.write(multiply(1, 3, 8));
+			document.write("<br />");
+		//2.С помощью рекурсии вычислить 10!: factorial(10)= 3628800
+			function fak(limit){
+				var value;
+				if(limit > 1){
+					value= limit * fak(limit - 1);
+				}else{
+					value = limit;
+				}
+				return value;
+				}
+			document.write(fak(10));
+			document.write("<br />");
+		//3.Создать функцию, которая принимает строку и возвращает строку-перевертыш: reversString('test')= 'tset'
+			function reverseString(string){
+				var newstr= "";
+				for(var i= string.length; i--;){				
+					 newstr += string[i];
+				}
+				return newstr;	
+			}
+			document.write(reverseString("test"));
+			document.write("<br />");
+		// 4.Создать функцию, которая в качестве аргумента принимает строку из букв и возвращает строку, где каждый символ разделен пробелом и заменен на юникод-значение символа: getCodeStringFromText('hello')= "104 101 108 108 111"
+			function unicodeStr(string){
+				var unic= "";
+				var str= "";
+				var checkT= checkType(string);
+				if(checkT == 1){
+					for(var i= 0; i< string.length; i++){
+						unic += string.charCodeAt(i) + " ";
+					}
+					return unic;
+				}else{
+					for(var i= 0; i< string.length; i++){
+						str += String.fromCharCode(string[i]);
+						console.log(string[i]);
+					}
+					return str;
+				}
+						
+			}
+
+			function checkType(val){
+				for(var i=0; i<=3; i++){
+					if(isNaN(val[i])){
+						return 1;
+					}else return 0;
+				}
+			}
+			var arrayT= [104, 101, 108, 108, 111];
+			var resUnic= unicodeStr("hello");
+			document.write(resUnic);
+			document.write("<br />");
+			var resStr= unicodeStr(arrayT);
+			document.write(resStr);
+			document.write("<br />");
+
+		//5.Написать функцию-рекурсию, которая выведет каждый символ строки в консоль: printChars('test')
+			function printChars(string){				
+				if(string.length > 0){
+					console.log(string[0]);
+					printChars(string.slice(1));
+				}
+			}
+			printChars("Hallo");
+		/*6.Создать две функции и дать им смысловые названия:
+			-превая функция принимает массив и колбэк
+			-вторая функция (колбэк) обрабатывает каждый элемент массива
+		Первая функция возвращает строку "New value:" и обработанный массив:
+			firstFunc(['my', 'name', 'is', 'Trinity'], secondFunc)->"New value: MyNameIsTrinity";
+			firstFunc([10, 20, 30], secondFunc)-> "New value: 100, 200, 300";
+			firstFunc([{age: 45, name:'Jhon'},{age:20, name:'Aaron'}], secondFunc)->"New value: John is 45, Aaron is 20";
+			firstFunc(['abc', '123'], secondFunc)->"New value: cba, 321";
+			fistFunc([1, 2, 3], function(number){return number +5+',';});//'New value: 6, 7, 8,';*/			
+			var trinity= ['my', 'name', 'is', 'Trinity'];
+			var tens= [10, 20 , 30];
+			var acc= [{age: 45, name: 'John'},{age:20, name:'Aron'}];
+			var rev= ['cba', '321'];
+			var num= [1, 2, 3];
+			
+			function highFunc(array, func){
+				document.write("New value: ");
+				return func(array);
+			}
+			
+			function myTrinity(arr){				
+				var upperTrinity= "";
+				for(var i= 0; i < arr.length; i++){				
+					var symbol= arr[i];
+					upperTrinity += symbol[0].toUpperCase();
+					upperTrinity += symbol.slice(1)+ " ";
+				}
+				return upperTrinity;
+			}
+			var newTrinity= highFunc(trinity, myTrinity);
+			document.write(newTrinity);
+			document.write("<br />");
+
+			function tenMulti(arr){				
+				var ten= "";
+				for(var i= 0; i< arr.length; i++){					
+					if(i == arr.length-1){
+						ten += (arr[i] * 10 + ".");
+					}else{
+						ten += (arr[i] * 10 + ", ");
+					}					
+				}
+				return ten;
+			}
+			var newTen =highFunc(tens, tenMulti);
+			document.write(newTen);
+			document.write("<br />");
+
+			function account(arr){
+				var getAcc= "";
+				for(var i= 0; i < arr.length; i++){
+					if(i == arr.length -1){
+						getAcc += arr[i].name + " is " + arr[i].age + ".";
+					}else{
+						getAcc += arr[i].name + " is " + arr[i].age + ", ";
+					}					
+				}
+				return getAcc;
+			}
+			var getAccount =highFunc(acc, account);
+			document.write(getAccount);
+			document.write("<br />");
+
+			function reverse(arr){
+				var str= "";
+				for(var i= arr.length; i--;){
+						str += arr[i];					
+					}			
+				return str;
+			}
+			var getReverse =highFunc(rev, reverse);
+			document.write(getReverse);
+			document.write("<br />");
+
+			
+	</script>
+</body>
+</html>

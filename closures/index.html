@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>closures</title>
+</head>
+<body>
+	<script>
+	//LE
+		//1. Что выведет следующий код? Почему?
+		console.log('1)');
+			console.log(getBigName(userName));
+
+			function getBigName(name){
+				name= name+"";
+				return name.toUpperCase();
+			}
+			var userName= 'Ivan';
+			// На момент вызова фунуции в LE будет свойство userName: undefined; и метод getBigName, который вернет UNDEFINED.
+
+		//2. Какое значение вернет функция test? Почему?
+		console.log('2)');
+			function test(){
+				var name= 'Vasiliy';
+				return getBigName(userName);
+			};
+			function getBigName(name){
+				name= name+"";
+				return name.toUpperCase();
+			};
+			var userName= 'Ivan';
+			console.log(test());
+			/*Вызывается функция test, она возвращает вызов getBigName, после чего ее le удаляется сборщиком мусора, потому что на нее нет ссылок. Выведет IVAN*/
+
+		//3. Что выведет функция getFood? Почему?
+		console.log('3)');
+			var food= 'cucumber';
+
+			(function (){
+				var food= 'bread';
+				getFood();
+			})();
+
+			function getFood(){
+				console.log(food);
+			};
+			//Функция запоминает окружение в момент ее определения. В данном случае ее scope  указывает на глобальный объект, поэтому SIF удалится вместе с переменной и выведется огурец).
+
+	//Closures
+		//2.Что будет выведено в консоль? Почему?
+		console.log('2)');
+			var greet= 'Hello';
+			(function (){
+				var text= 'World';
+				console.log(greet + text);
+			})();
+			//console.log(greet + text);
+			// Выведется HelloWorld и referenceError, text находится в локальной области видимости - замыкание. После того, как функция отработает, она удалится сборщиком мусора и переменная уже не будет существовать.
+
+		/*3.Создайте функцию которая бы умела делать:
+			 minus(10)(6); // 4
+			 minus(5)(6); // -1
+			 minus(10)(); // 10
+			 minus()(6); // 6
+			 minus()(); // 0
+		*/
+		console.log('3)');
+			function minus(arg1){		
+				return function(arg2){
+					if(arg1== undefined && arg2 !== undefined){
+						arg1= "";
+						console.log(arg2);
+					}else if(arg2== undefined && arg1 !== undefined){
+						arg2= "";
+						console.log(arg1);
+					}else if(arg1== undefined && arg2== undefined){
+						arg1= "";
+						arg2= "";
+						console.log(0);
+					}else{
+						console.log(arg1 - arg2);
+					}					
+				}; 
+			};
+			minus(10)(6);
+			minus(5)(6);
+			minus(10)();
+			minus()(6);
+			minus()();
+
+		/*4.Реализовать функцию, которая умножает и умеет запоминать возвращаемый результат между вызовами:
+			function multiplyMaker ...
+			const multiply= MultiplyMaker(2);
+			multiply(2); 4(2*2)
+		*/
+		console.log('4)');
+			function multiplyMaker(fnum){
+				var result= fnum;
+				return function(Snum){
+					return result*= Snum;
+				}
+			}
+			var multyRes= multiplyMaker(2);
+			console.log(multyRes(2));
+			console.log(multyRes(1));
+			console.log(multyRes(3));
+			console.log(multyRes(10));
+
+		/*5. Реализовать модуль, который работает со строкой и имеет методы:
+			a. Установить строку
+				i. Если передано пустое значение, то установить пустую строку
+				ii. Если передано число, число привести к строке
+			b. Получить строку
+			c. Получить длину строки
+			d. Получить строку перевертыш
+		*/
+		console.log('5)');
+			const workWithString= (function(){
+				var str= "";
+				var rev= "";
+				function checkStr(string){
+					if(string == undefined){
+						str;
+					}else if(typeof string == "number"){						
+						str= String(string);
+					}else{
+						str= string;
+					}
+					return this;
+				};
+				function getLengthStr(){
+					console.log(str.length);
+					return this;
+				};
+				function getReverse(){
+					for(var i = str.length; i--;){
+						rev += str[i];
+					};
+					console.log(rev);
+					return this;
+				}					
+				function getStr(){
+					return str;
+				}
+				return {
+					checkStr: checkStr,
+					getStr: getStr,
+					getLengthStr: getLengthStr,
+					getReverse: getReverse,
+				}
+			})();
+			console.log(workWithString
+											.checkStr('Anton')
+											.getLengthStr()
+											.getReverse()
+											.getStr());
+
+		/*6. Создайте модуль "калькулятор", который умеет складывать, умножать, вычитать, делить и возводить в сепень. Конечное значение округлить до двух знаков после точки(значение должно храниться в обычной переменной, не в this)
+			модуль.установитьЗначение(10); значение 10
+			модуль.прибавить(5); значение +=5
+			модуль.умножить(2); *=2
+			модуль.узнатьЗначение(); вывести в консоль 30(здесь надо округлить)
+
+			Также можно вызвать методы цепочкой:
+				модуль.установитьЗначение(10).вСтепень(2).узнатьЗначение(); 100		 	
+		*/
+			console.log('6)');
+			const calculateModule= (function(){
+				var num;
+				function setVal(val){
+					num= val;
+					return this;
+				};
+				function plus(val){
+					num += val;
+					return this;
+				};
+				function multiply(val){
+					num *= val
+					return this;
+				};
+				function squar(val){
+					num = Math.pow(num, val);
+					return this;
+				};					
+				function getNum(){
+					return num.toFixed(2);
+				};
+				return {
+					setVal: setVal,
+					plus: plus,
+					multiply: multiply,
+					squar: squar,
+					getNum: getNum,
+				};
+			})();
+			console.log(calculateModule
+											.setVal(10)
+											.plus(5)
+											.squar(2)
+											.getNum());						
+	</script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>ОПП</title>
+</head>
+<body>
+	<script>
+		//1. Создать наследника от Planet, который будет называться PlanetWithSatellite и будет принимать, кроме name, название спутника (satelliteName). Переопределите метод getName для PlanetWithSatellite так, чтобы он возвращал ту же самую строчку + дополнительный текст 'The satellite is' + satelliteName.
+		console.log('1)');
+			function Planet(name){
+				this.name= name;
+				this.getName= function(){
+					return 'Planet name is ' + this.name;
+				}
+			};
+			function PlanetWithSatellite(name, satelliteName){
+				Planet.call(this, name);
+				this.satellite= satelliteName;
+				var trueMethod= this.getName;
+				this.getName= function(){
+					var trueThis= trueMethod.call(this);
+					return trueThis+ "," + "\n" +'Satellite name is ' + this.satellite + ".";
+				};
+			};
+			var earth= new PlanetWithSatellite("earth", "moon");
+			console.log(earth.getName());
+
+		/*2. Создайте класс "Здание" (пусть у него будет имя, количество этажей, метод "получить количество этажей" и метод "установить количество этажей").
+			Создайте наследников этого класса:
+				классы "Жилой дом" и "Торговый центр". Используйте функциональное наследование.
+		У жилого дома появится свойство "количество квартир на этаже", а метод "получить количество этажей" должен вернуть объект вида {этажи: 5, всегоКваритр: 5*количествоКвартир}
+
+		У торгового центра появится свойство "количество магазинов на этаже", а метод "получить количество этажей" должен вернуть объект вида {этажи:3, всегоМагазинов: 3*количествоМагазинов}
+
+		От каждого класса создать экземпляр(дом, торговый центр)*/
+		console.log("2)");
+			function Building(numOfFloors){
+				this.numOfFloors= numOfFloors || "0";
+				this.getNumOfFloors= function(){
+					return this.numOfFloors;
+				};
+				this.setNumOfFloors= function(num){
+					this.numOfFloors= num;
+				};
+			};
+			function House(apOnFloor, numOfFloors){
+				Building.apply(this, arguments);
+				this.apOnFloor= apOnFloor;
+				var trueMethod= this.getNumOfFloors;
+				this.getNumOfFloors= function(){
+					var trueThis= trueMethod.call(this);
+					return {"floors": trueThis,
+							  "allAp": trueThis * this.apOnFloor,};
+				};
+			};
+			function Mall(storeOnFloor, numOfFloors ){
+				Building.apply(this, arguments);
+				this.storeOnFloor= storeOnFloor;
+				var trueMethod= this.getNumOfFloors;
+				this.getNumOfFloors= function(){
+					var trueThis= trueMethod.call(this);
+					return {"stores": trueThis,
+							  "allStores": trueThis * this.storeOnFloor,};
+				};
+			};
+			var house= new House(16, 4);
+			console.log(house.getNumOfFloors());
+
+			var mall= new Mall(5, 20);
+			console.log(mall.getNumOfFloors());
+
+		//3. Создать класс "Мебель" с базовыми свойствами "имя", "цена" и методом "получить информацию"(метод должен вывести имя и цену в объекте). Метод должен быть объявлен с помощью прототипов. Создать два экземпляра класса "Мебель": экземпляр "ОфиснаяМебель" и "Мебель для дома". Придумайте им по одному свойству, которые будут характерны только для этих экземпляров. Метод "получить информацию" должен учитывать и добавленное вами новое свойство. Задача на переопределение метода у экземпляра.
+		console.log("3)");
+		function Furniture(info){
+			this.type= info.type || "How knows";
+			this.price= info.price || "Free";
+		};
+		Furniture.prototype.getInfo= function(){
+			return {"Тип мебели" : this.type,
+					  "Цена" : this.price,
+					 };
+		};
+
+		function OfficeFu(info){
+			Furniture.call(this, info);
+			this.numOfWorkplaces= info.numOfWorkplaces;
+		};
+		OfficeFu.prototype= Object.create(Furniture.prototype);
+		OfficeFu.prototype.constructor= OfficeFu;		
+		OfficeFu.prototype.getInfo= function(){
+			var methodObj= Furniture.prototype.getInfo.call(this);
+			methodObj["Количество рабочих мест"]= this.numOfWorkplaces;
+			return methodObj;
+		};		
+
+		function HomeFu(info){
+			Furniture.call(this, info);
+			this.color= info.color;
+		};
+		HomeFu.prototype= Object.create(Furniture.prototype);
+		HomeFu.prototype.constructor= HomeFu;		
+		HomeFu.prototype.getInfo= function(){
+			var methodObj= Furniture.prototype.getInfo.call(this);
+			methodObj.color= this.color;
+			return methodObj;
+		};
+
+		var officeFu= new OfficeFu({
+			type: "fuForStaff",
+			numOfWorkplaces: 4,
+			price: "1000$",
+		});
+		var homeFu= new HomeFu({
+			type: "fuForHome",
+			price: "200$",
+			color: "Purple",
+		});
+		console.log(officeFu.getInfo());
+		console.log(homeFu.getInfo());
+
+	/*4. Создать класс "Пользователь" с базовыми свойствами "имя", "дата регистрации" и методом "получить информацию". 
+	Создать два наследника класса "Пользаватель":класс "Админ" и класс "Гость".
+	У класса "Админ" должно быть дополнительное свойство "суперАдмин"(может быть true/false, должно быть скрытым). Свойства определяются в момент вызова конструктора.
+	У класса "Гость" должно быть свойство "срокДействия"(validDate, например- поле также должно быть скрытым), содержащее дату(например, одну неделю от момента регистрации).
+	У классов-наследников метод "получить информацию" должен так же содержать информацию о дополнительных свойствах("суперАдмин" и "срокДействия").*/
+	console.log("4)");
+		function User(info){
+			this.user= info.user || "noName";
+			this.dateReg= info.dateReg || "noDate";
+		};
+		User.prototype.getInfo= function(){
+			return {
+				"UserName": this.user,
+				"RegDate": this.dateReg,
+			};
+		};
+
+		function Admin(info){
+			User.call(this, info);
+			this._superAdmin= info.superAdmin || "NotSuper";
+		};
+		Admin.prototype= Object.create(User.prototype);
+		Admin.prototype.constructor= Admin;
+		Admin.prototype.getInfo= function(){
+			var trueMethod= User.prototype.getInfo.call(this);
+			trueMethod.superAdmin= this._superAdmin;
+			return trueMethod;
+		};
+
+		function Guest(info){
+			User.call(this, info);
+			var self= this;
+			var getValidDate= function(){
+				var arrRegDate= self.dateReg.split('.');
+				var date= +arrRegDate[0] + 6;
+				var validDate= new Date(arrRegDate[2], arrRegDate[1], date);
+				if(validDate.getDate() < 10){
+					return "0" + validDate.getDate() + "." + validDate.getMonth() + "." + validDate.getFullYear();
+				}else{
+					return validDate.getDate() + "." + validDate.getMonth() + "." + validDate.getFullYear();
+				}
+				
+			};
+			this._validDate= getValidDate();
+		};
+		Guest.prototype= Object.create(User.prototype);
+		Guest.prototype.constructor= Guest;
+		Guest.prototype.getInfo= function(){
+			var trueMethod= User.prototype.getInfo.call(this);
+			trueMethod.validDate= this._validDate;
+			return trueMethod;
+		};
+		var admin= new Admin({
+			user: "Ahmed",
+			dateReg: "23.11.2016",
+			superAdmin: true,
+		});
+		var guest= new Guest({
+			user: "Nishkapur",
+			dateReg: '29.10.2016',
+		});
+		console.log(admin.getInfo());
+		console.log(guest.getInfo());
+	</script>
+</body>
+</html>

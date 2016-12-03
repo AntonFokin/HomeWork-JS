@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Cycles</title>
+</head>
+<body>
+	<script>
+		//Дана строка "I am in the easycode". Сделать превые буквы каждого слова в верхнем регистре.
+			var str= 'I am in the easycode';
+			var i;
+			for(i=0; i<str.length; i++){
+				if(str[i-1] == " "){
+					document.write(str[i].toUpperCase());
+				}else{
+					document.write(str[i]);
+				}
+			}
+			document.write("<br />");
+		//Дана строка "tseb eht ma i". Исполюзуя циклы, сделать строку-перевертыш.
+			var str= "tseb eht ma i";
+			for(i= str.length-1; i>=0; i--){
+				document.write(str[i]);
+			}
+		//Вычислить 10!
+			let fak= 1;
+			for(i=2; i<=10; i++){
+				fak*= i;
+			}
+			document.write("<br />");
+			document.write("Факториал числа 10 равен: " + fak);
+			document.write("<br />");
+		//Создайть строку "Считаем до 10-и: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
+			var string= "Cчитаем до 10-и:";
+			var i= 1;
+			for(i; i<=10; i++){
+				switch(i){
+					case 1: document.write(string + " " + i + ","); break
+					case 10: document.write(" " + i + "."); break
+					default: document.write(" " + i + ",");
+				}
+			}
+		//или			
+			/*var string= "Cчитаем до 10-и:";
+			var i= 1;
+			for(i; i<=10; i++){
+			if(i == 1){
+					document.write(string + " " + i + ",");
+				}else if(i == 10){
+					document.write(" " + i + ".");
+				}else{
+					document.write(" " + i + ",");
+				}
+			}*/
+		//На основе строки "JavaScript is a pretty good language" сделать новую строку, где каждое слово начинается с большой буквы, а пробелы удалены
+			document.write("<br />");
+			var str= 'JavaScript is a pretty good language';
+			let newstr= "";
+			var i;
+			for(i=0; i<str.length; i++){
+				if(str[i-1] == " "){
+					newstr+= str[i].toUpperCase();
+				}else if(str[i] == " "){
+					newstr+= "";
+				}else{
+					newstr+= str[i];
+				}
+			}
+			document.write(newstr);
+		//Найти все нечетные числа от 1 до 15 вклбчительно и вывести их в консоль
+			var i;
+			for(i= 0; i<15; i++){
+				console.log(i+=1);
+			}
+	</script>
+</body>
+</html>
